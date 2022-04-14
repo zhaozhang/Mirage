@@ -147,7 +147,7 @@ def simulate(args, actor, loop, infer_wrapper):
     # ---------------------------------------------------------------------------------------------------------------
     # Simulator Initialization
     # logging.basicConfig(format='%(asctime)s - %(levelname)s: %(message)s', level=logging.INFO)
-    job_log = "./filtered-frontera-rtx.log"
+    job_log = "./filtered-longhorn-v100.log"
     slurm_config = "./slurm_config.json"
     backfill_config = "./backfill_config.json"
     slurm_config = load_slurm_config(slurm_config)

@@ -39,9 +39,9 @@ TRAIN_NEPOCHS = 200
 
 if __name__ == '__main__':
 
-    fname_data_raw = 'batch_2802_7_node_8.pickle'
-    fname_data_tensor = 'batch_2802_7_node_8_cache.pickle'
-    fname_model = 'model_2802_7_node_8_convolution.pt'
+    fname_data_raw = 'batch_2802_7.pickle'
+    fname_data_tensor = 'batch_2802_7_cache.pickle'
+    fname_model = 'model_2802_7.pt'
 
     if (not os.path.exists(os.path.join('data', fname_data_tensor))):
         with open(os.path.join('data', fname_data_raw), 'rb') as data:

@@ -119,7 +119,7 @@ class ProgressBar:
 def pre_simulate(simulator_start_time, workload_start_time, workload_end_time, slurm_config, backfill_config):
     # ---------------------------------------------------------------------------------------------------------------
     # Simulator Initialization
-    job_log = "./filtered-frontera-rtx.log"
+    job_log = "./filtered-longhorn-v100.log"
     jobs = parse_job(job_log)
 
     slurm_simulator = Simulator(mode=Mode.MINUTES)
