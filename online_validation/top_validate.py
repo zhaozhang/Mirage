@@ -199,7 +199,7 @@ def main():
 
     # ---------------------------------------------------------------------------------------------------------------
     # Agent Initialization
-    checkpoint_path = "../model_2800_7_convolution.pt"
+    checkpoint_path = "../model/model_2800_7.pt"
     checkpoint = torch.load(checkpoint_path, map_location=torch.device("cpu"))
 
     model_name = checkpoint['model_name']

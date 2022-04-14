@@ -263,7 +263,7 @@ def main():
     data, avg = simulate(args.num_probe, args.start_time_interval, args.parallel, args.num_samples, args.avg_baseline)
     # data, avg_queue_time = simulate_avg(args.start_time_interval, args.num_samples, args.parallel, args.num_probe)
 
-    with open("test.pickle", "wb") as f:
+    with open("batch_2800_7.pickle", "wb") as f:
         pickle.dump(data, f)
     with open("avg.json", "w") as f:
         json.dump(avg, f)
