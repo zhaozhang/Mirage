@@ -39,7 +39,7 @@
 
    ```shell
    # Training data will be generated as batch_2800_7.pickle
-   Singularity> unset PYTHYONPATH
+   Singularity> unset PYTHONPATH
    Singularity> cd offline_data_gen
    Singularity> python3 offline_data_gen.py -parallel -num_samples 2802 -num_probe 7 -interval 4
    ```
