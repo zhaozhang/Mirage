@@ -26,15 +26,15 @@ We begin by initializing the workload.
 
 1. Workload Initialization
     ```python
-    job_log = "./filtered-frontera-rtx.log"
+    job_log = "./filtered-longhorn-v100.log"
     ```
     * Search for the above line of code in offline_data_gen.py and replace it with the name of the workload file you are using.
     * This log file should be in the same path with the offline_data_gen scripts.
    ```python
-   simulator_init_time = datetime.strptime("2020-11-14T00:00:00", "%Y-%m-%dT%H:%M:%S")
+   simulator_init_time = datetime.strptime("2019-11-14T00:00:00", "%Y-%m-%dT%H:%M:%S")
    ```
     * Search for the above line of code and change it to the date you want to use as the start time of the generated workload.
-    * Training data used in our experiment is from 2020-11-14T00:00:00 (start time of the workload) to 2021-02-27T00:00:00
+    * Training data used in our experiment is from 2019-11-14T00:00:00 (start time of the workload) to 2021-02-27T00:00:00
 2. Run
    ```shell
    # Training data will be generated as test.pickle
@@ -45,12 +45,12 @@ We begin by initializing the workload.
 
 1. Workload Initialization
     ```python
-    job_log = "./filtered-frontera-rtx.log"
+    job_log = "./filtered-longhorn-v100.log"
     ```
     * Search for the above line of code in offline_data_gen.py and replace it with the name of the workload.
     * This log file should be in the same path as all the scripts.
    ```python
-   simulator_init_time = datetime.strptime("2020-03-01T00:00:00", "%Y-%m-%dT%H:%M:%S")
+   simulator_init_time = datetime.strptime("2021-03-01T00:00:00", "%Y-%m-%dT%H:%M:%S")
    ```
     * Search for the above line of code and change it to the date you want to use as the start time of the workload.
     * Training data used in our experiment is from 2020-03-01T00:00:00 (start time of the workload) to 2021-07-27T00:00:00
