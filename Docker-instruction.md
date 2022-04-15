@@ -39,7 +39,7 @@
 
    ```shell
    # Training data will be generated as batch_2800_7.pickle
-   Singularity> unset PYTHYONPATH
+   Singularity> unset PYTHONPATH
    Singularity> cd offline_data_gen
    Singularity> python3 offline_data_gen.py -parallel -num_samples 2802 -num_probe 7 -interval 4
    ```
@@ -63,7 +63,7 @@
    You can use the previously generated training data or download from the provided link.
    ```shell
    # Create two file folders called "data" and "model" under current directory.
-   Singularity> cd /dev/shm/pro_2
+   Singularity> cd /dev/shm/pro_2/train_model/
    Singularity> mdkir data model
 
    # Copy the training data into "data" folder.
@@ -72,8 +72,6 @@
    # You may also download the training data from box. The data is valid till 05/14/2022
    Singularity> curl -L https://utexas.box.com/shared/static/2dnwd4v1uvp59spqza14x3xosoncvuki --output data/batch_2800_7.pickle
 
-   # Go to train_model/
-   Singularity> cd train_model/
 
    # Train the model, the model will be model/model_2800_7.pt
    Singularity> python3 train.py
@@ -89,12 +87,19 @@
    Singularity> cp ../offline_data_gen/filtered-longhorn-v100.log .
    ```
 
-2. Run
+2. Use the trained model or download it from box
+   ```shell
+   # If using the trained model, you do not have to do anything
+   # Otherwise, download the trained model using the following link
+   curl -L https://utexas.box.com/shared/static/t3s3cdku866ly7hwyc0ysng4svqkjwpe --output /dev/shm/pro_2/train_model/model/model_2800_7.pt
+   ```
+
+3. Run
    ```shell
    # The output file will be reward.log under the same path
    Singularity> python3 top_validate.py -num_validate 888
    ```
 
-3. You will see a reward.log that contains the validation rewards.
+4. You will see a reward.log that contains the validation rewards.
    
 
