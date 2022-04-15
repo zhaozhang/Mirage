@@ -214,7 +214,13 @@ def simulate(num_probe, start_time_interval, parallel, num_sample_all, mode=Fals
     backfill_config = "./backfill_config.json"
     slurm_config = load_slurm_config(slurm_config)
     backfill_config = load_backfill_config(backfill_config)
+    
+    # Use the following line to generate training data
     simulator_init_time = datetime.strptime("2019-11-14T00:00:00", "%Y-%m-%dT%H:%M:%S")    
+
+    # Use the following line to generate avg and reactive baseline
+    # simulator_init_time = datetime.strptime("2021-03-01T00:00:00", "%Y-%m-%dT%H:%M:%S")
+
     if not parallel:
         # Do not use non-parallel version for this script!
         for i in range(0, num_sample_all):

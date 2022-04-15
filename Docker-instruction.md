@@ -49,14 +49,22 @@ There are three types of data that we use in our project:
 
    ```shell
    # Training data will be generated as batch_2800_7.pickle
+   # The training data is from 2019-11-14T00:00:00 to 2021-02-27T00:00:00
    Singularity> unset PYTHONPATH
    Singularity> cd offline_data_gen
    Singularity> python3 offline_data_gen.py -parallel -num_samples 2802 -num_probe 7 -interval 4
    ```
 
 #### Baseline generation (offline_data_gen)
+   1. Change the init_time in offline_data_gent.py
 
-   Generating avg baseline and reactive baseline:
+   ```python
+   # Replace Line 219 with the following init_time. 
+   # The validation data is from 2021-03-01T00:00:00 to 2021-07-27T00:00:00
+   simulator_init_time = datetime.strptime("2021-03-01T00:00:00", "%Y-%m-%dT%H:%M:%S")
+   ```
+
+   2. Generating avg baseline and reactive baseline:
    ```shell
    # Pickle file structure:
    # All the rewards are in the first element for each list [[XXX, reward], ..., [XXX, reward]]

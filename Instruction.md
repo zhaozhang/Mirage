@@ -53,7 +53,7 @@ We begin by initializing the workload.
    simulator_init_time = datetime.strptime("2021-03-01T00:00:00", "%Y-%m-%dT%H:%M:%S")
    ```
     * Search for the above line of code and change it to the date you want to use as the start time of the workload.
-    * Training data used in our experiment is from 2020-03-01T00:00:00 (start time of the workload) to 2021-07-27T00:00:00
+    * Validation data used in our experiment is from 2021-03-01T00:00:00 (start time of the workload) to 2021-07-27T00:00:00
 2. Run
    ```shell
    # Pickle file structure:
