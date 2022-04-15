@@ -1,4 +1,4 @@
-## Pro2 Source Codes and User Manual
+## Pro2 Source Code and User Manual
 
 ***
 
@@ -8,11 +8,21 @@
 * /pro_2/offline_data_gen: Training data generation and baseline generation
 * /pro_2/online_validation: Online validation of the model
 
+### Data
+
+There are three types of data that we use in our project:
+
+* job traces: derived from scheduler logs. The raw job trace is proprietary; please contact
+  zzhang@tacc.utexas.edu if you want to get access.
+* processed training data:  this includes training data that is derived from the job traces and is
+  the output offline_data_gen. We have made this available on Box until 5/14/2022.
+* trained model: this is the output from training our model by running train_model. We have also made this available on Box.
+
 ### User Manual
 
 #### Start singularity and download the data seperately
 
-1. This code was only tested on TACC Frontera supercomputer, plesae login the machine and start an idev session by running
+1. This code was only tested on TACC Frontera supercomputer, please login to the machine and start an idev session by running
    ```shell
       idev -N 1 -n 1 -p rtx-dev -t 02:00:00
    ```
@@ -72,14 +82,13 @@
    # You may also download the training data from box. The data is valid till 05/14/2022
    Singularity> curl -L https://utexas.box.com/shared/static/2dnwd4v1uvp59spqza14x3xosoncvuki --output data/batch_2800_7.pickle
 
-
    # Train the model, the model will be model/model_2800_7.pt
    Singularity> python3 train.py
    ````
 
 #### Online validation (online_validation)
 
-   You can use the previously trained model or download the model from teh provided link
+   You can use the previously trained model or download the model from the provided link
 
 1. Copy the log trace so that Ray can run in parallel
    ```shell
