@@ -1,3 +1,25 @@
+## Pro2 Source Code and User Manual
+
+***
+
+### Code Download
+
+Download source code
+```shell
+git clone https://github.com/zhaozhang/Pro_2.git
+```
+
+### Data Download
+
+There are three types of data that we use in our project:
+
+* job traces: derived from scheduler logs. The raw job trace is proprietary; please contact
+  zzhang@tacc.utexas.edu if you want to get access.
+* please place the downloaded job trace files in src/workload.
+
+
+### Manual
+
 Offline data generation (node 1)
 ```shell
 python3 offline_data_gen.py -parallel -num_samples 684 -num_probe 7 -interval 4 -od /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/data/ls6/data_node_8_684 -workload filtered-ls6.log -start_time 2022-11-01T00:00:00 -warmup_len 2 -workload_len 5 -node 1 -baseline default
