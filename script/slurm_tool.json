@@ -1,0 +1,10 @@
+{
+  "workload": [
+    {
+      "submit_time": "2021-03-01T00:00:00",
+      "scripts": ["validate_frontera_window_144", "validate_frontera_window_144"],
+      "job_index": 0
+    }
+  ],
+  "project_name": "Deep-Learning-at-Sca"
+}

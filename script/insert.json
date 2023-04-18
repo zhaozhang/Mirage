@@ -1,0 +1,16 @@
+{
+  "Job_index": 1,
+  "1": {
+    "JobID": 10000000,
+    "JobName": "test",
+    "UID": 0,
+    "Start": "2020-07-01T00:43:22",
+    "Submit": "2020-07-02T00:43:22",
+    "End": "2020-07-03T00:43:22",
+    "Priority": 0,
+    "TimelimitR": 2880,
+    "ExitCode": "0:0",
+    "NNodes": 4,
+    "frequency": 1
+  }
+}

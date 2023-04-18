@@ -1,0 +1,14 @@
+{
+  "workload": [
+    "frontera",
+    "longhorn"
+  ],
+  "baseline": [
+    "baseline_avg_interval_2",
+    "baseline_reactive_interval_2"
+  ],
+  "validation": [
+    "validation_window_144_interval_2"
+  ],
+  "fig_output": "../model_experiment/figure_backfill_split/"
+}

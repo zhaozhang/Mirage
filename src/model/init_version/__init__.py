@@ -1,0 +1,2 @@
+from init_version.predictor import Predictor
+from init_version.predictor import raw_features_to_np_ndarray

@@ -1,0 +1,9 @@
+{
+  "PriorityDecayHalfLife": "2-0",
+  "PriorityWeightFairshare": 4000,
+  "PriorityWeightAge": 7000,
+  "PriorityWeightPartition": 3000,
+  "PriorityWeightQOS": 4000,
+  "PriorityWeightJobSize": 100,
+  "PriorityMaxAge": 7
+}

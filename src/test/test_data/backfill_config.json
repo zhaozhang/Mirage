@@ -1,0 +1,11 @@
+{
+  "default_queue_depth": 1000,
+  "bf_continue": true,
+  "bf_max_job_test": 3000,
+  "bf_window": 2880,
+  "bf_resolution": 600,
+  "disable_user_top": true,
+  "bf_max_time": 600,
+  "bf_job_part_count_reserve": 100,
+  "bf_interval": 10
+}

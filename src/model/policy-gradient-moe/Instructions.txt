@@ -1,0 +1,13 @@
+The relevant files are env.py and policy_gradient.py
+
+git checkout policy-gradient
+
+cd to interrupt-free-provisioning
+
+Then run policy_gradient.py. You do not need to add any command line options
+
+in policy_gradient.py, the RNN agent is defined in class RNN_Agent2
+
+the environment interface (init, step, reset, reward)
+
+
