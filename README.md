@@ -13,8 +13,7 @@ git clone https://github.com/zhaozhang/Pro_2.git
 
 There are three types of data that we use in our project:
 
-* job traces: derived from scheduler logs. The raw job trace is proprietary; please contact
-  zzhang@tacc.utexas.edu if you want to get access.
+* job traces: derived from scheduler logs. The raw job trace is proprietary; please contact zzhang@tacc.utexas.edu to obtain a copy.
 * please place the downloaded job trace files in src/workload.
 
 
