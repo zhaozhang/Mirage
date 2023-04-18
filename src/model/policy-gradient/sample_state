@@ -1,0 +1,13 @@
+t: Fri Aug 20 06:49:01 2021
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+             88785    normal    88785    user1 PD       0:00     64 (Resources)
+             88275    normal    88275    user1  R 1-22:55:22      1 n88
+             88276    normal    88276    user1  R 1-22:54:52      1 n12
+             88277    normal    88277    user1  R 1-22:54:52      1 n16
+             88278    normal    88278    user1  R 1-22:54:52      1 n19
+             88279    normal    88279    user1  R 1-22:54:52      1 n86
+             88280    normal    88280    user1  R 1-22:31:51      1 n20
+             88538    normal    88538    user1  R 1-07:49:30      1 n70
+             88768    normal    88768    user1  R   13:59:53      1 n82
+             88783    normal    88783    user1  R    2:52:24     16 n[7,71-81,83-85,87]
+             88784    normal    88784    user1  R       3:17     64 n[1-6,8-11,13-15,17-18,21-69]

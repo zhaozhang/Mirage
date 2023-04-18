@@ -1,0 +1,12 @@
+{
+  "job_log": "C:/RA-work-new/interrupt-free-provisioning/data/filtered-frontera-rtx.log",
+  "slurm_config": "C:/RA-work-new/interrupt-free-provisioning/src/test/test_data/slurm_config.json",
+  "backfill_config": "C:/RA-work-new/interrupt-free-provisioning/src/test/test_data/backfill_config.json",
+  "sim_start_time": "2019-12-04T00:00:00",
+  "log_start_time": "2019-12-04T00:00:00",
+  "log_end_time": "2021-02-23T00:00:00",
+  "warmup_len": 2,
+  "sim_len": 5,
+  "sim_window": 144,
+  "seed": 10
+}
