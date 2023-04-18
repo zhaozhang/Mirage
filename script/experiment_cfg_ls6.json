@@ -1,0 +1,559 @@
+{
+  "general_args": {
+    "script_header": "#!/bin/bash\n#SBATCH -N 1\n#SBATCH -n 1\n#SBATCH -p {queue}\n#SBATCH -t {time_limit}\n#SBATCH -o {log}\n",
+    "validation_str": "module load python3/3.9.7\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/top\npython3 online_validate.py -num_validate {samples} -interval 4 -workload {workload_file} -workload_len 5 -start_time {start_time} -od {output_dir} -m {model} -warmup_len 2 -sample_window 144 -parallel -mt {model_type} -node {node}\n",
+    "train_moe_str": "module load python3/3.9.7\nmodule load cuda/11.3\nexport LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/model/moe/\npython3 train.py -wd ../../data/{workload}/ -n {model_name} -parallel -nd {data_prefix} -mix_epoch {epoch} -sample_window 144\n",
+    "train_transformer_str": "module load python3/3.9.7\nmodule load cuda/11.3\nexport LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/model/init_version/\npython3 train.py -wd ../../data/{workload}/ -n {model_name} -parallel -nd {data_prefix} -epoch {epoch}\n",
+    "train_policy_gradient_str": "module load python3/3.9.7\nmodule load cuda/11.3\nexport LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/model/{policy_type}\npython3 policy_gradient.py -train_cfg {cfg_dir}/train_cfg.json --use_cuda -config {cfg_dir}/sim.json -base_dir {base_model_dir} -base_prefix {base_prefix} -output_dir {output_dir} -save {save_epoch} {extra_args}\n",
+    "train_random_forest_str": "module load python3/3.9.7\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/script/\npython3 quantile_baseline.py -data {train_data_input} -out {output_file} -config ./baseline_model_config.json -model {model_type}\n",
+    "offline_gen_str": "module load python3/3.9.7\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/top/\npython3 offline_data_gen.py -parallel -num_samples {samples} -num_probe 7 -interval 4 -od {output_dir} -workload {workload_file} -start_time {start_time} -warmup_len 2 -workload_len 5 -node {node} -baseline {baseline}\npython3 /work2/08377/dingqy/ls6/interrupt-free-provisioning/script/pickle_merge.py -wd {output_dir} -out {output_file}"
+  },
+  "general_policy_sim_cfg": {
+    "job_log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/src/workload/filtered-ls6.log",
+    "slurm_config": "/work/08377/dingqy/ls6/interrupt-free-provisioning/src/test/test_data/slurm_config.json",
+    "backfill_config": "/work/08377/dingqy/ls6/interrupt-free-provisioning/src/test/test_data/backfill_config.json",
+    "sim_start_time": "2022-11-01T00:00:00",
+    "log_start_time": "2022-11-01T00:00:00",
+    "log_end_time": "2023-02-28T23:59:59",
+    "warmup_len": 2,
+    "sim_len": 5,
+    "sim_window": 144,
+    "seed": 10,
+    "job_node": 1
+  },
+  "general_policy_model_cfg": {
+    "lr": 0.01,
+    "batch_size": 32,
+    "epoch": 60
+  },
+  "tasks": {
+    "ls6_offline_gen": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_offline_gen/ls6_offline_gen.log"
+      },
+      "args": {
+        "samples": 684,
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/src/data/ls6/train_data_684",
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2022-11-01T00:00:00",
+        "output_file": "batch_ls6_684_7.pickle",
+        "baseline": "default",
+        "node": 1
+      },
+      "type": "offline_gen_str",
+      "recent_exec_time": "2023-04-04T23:02:23"
+    },
+    "ls6_offline_gen_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_offline_gen_node_8/ls6_offline_gen_node_8.log"
+      },
+      "args": {
+        "samples": 684,
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/src/data/ls6/data_node_8_684",
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2022-11-01T00:00:00",
+        "output_file": "batch_ls6_684_7_node_8.pickle",
+        "baseline": "default",
+        "node": 8
+      },
+      "type": "offline_gen_str",
+      "recent_exec_time": "2023-04-04T23:02:23"
+    },
+    "ls6_offline_gen_baseline_avg_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_offline_gen_baseline_avg_node_8/ls6_offline_gen_baseline_avg_node_8.log"
+      },
+      "args": {
+        "samples": 156,
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_offline_gen_baseline_avg_node_8/baseline_avg",
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_file": "baseline_avg_ls6_merge.pickle",
+        "baseline": "baseline_avg",
+        "node": 8
+      },
+      "type": "offline_gen_str",
+      "recent_exec_time": "2023-04-04T23:02:23"
+    },
+    "ls6_offline_gen_baseline_reactive_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_offline_gen_baseline_reactive_node_8/ls6_offline_gen_baseline_reactive_node_8.log"
+      },
+      "args": {
+        "samples": 156,
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_offline_gen_baseline_reactive_node_8/baseline_reactive",
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_file": "baseline_reactive_ls6_merge.pickle",
+        "baseline": "baseline_reactive",
+        "node": 8
+      },
+      "type": "offline_gen_str",
+      "recent_exec_time": "2023-04-04T23:02:23"
+    },
+    "ls6_offline_gen_baseline_avg": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_offline_gen_baseline_avg/ls6_offline_gen_baseline_avg.log"
+      },
+      "args": {
+        "samples": 156,
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_offline_gen_baseline_avg/baseline_avg",
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_file": "baseline_avg_ls6_merge.pickle",
+        "baseline": "baseline_avg",
+        "node": 1
+      },
+      "type": "offline_gen_str",
+      "recent_exec_time": "2023-04-04T23:02:23"
+    },
+    "ls6_offline_gen_baseline_reactive": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_offline_gen_baseline_reactive/ls6_offline_gen_baseline_reactive.log"
+      },
+      "args": {
+        "samples": 156,
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_offline_gen_baseline_reactive/baseline_reactive",
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_file": "baseline_reactive_ls6_merge.pickle",
+        "baseline": "baseline_reactive",
+        "node": 1
+      },
+      "type": "offline_gen_str",
+      "recent_exec_time": "2023-04-04T23:02:23"
+    },
+    "ls6_train_moe": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_moe/ls6_train_moe.log"
+      },
+      "args": {
+        "epoch": 300,
+        "workload": "ls6",
+        "model_name": "moe_ls6",
+        "data_prefix": "ls6_684_7"
+      },
+      "type": "train_moe_str",
+      "recent_exec_time": "2023-04-04T23:12:31"
+    },
+    "ls6_train_transformer": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_transformer/ls6_train_transformer.log"
+      },
+      "args": {
+        "epoch": 300,
+        "workload": "ls6",
+        "model_name": "transformer_ls6",
+        "data_prefix": "ls6_684_7"
+      },
+      "type": "train_transformer_str",
+      "recent_exec_time": "2023-04-04T23:12:31"
+    },
+    "ls6_train_moe_node_8": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_moe_node_8/ls6_train_moe_node_8.log"
+      },
+      "args": {
+        "epoch": 300,
+        "workload": "ls6",
+        "model_name": "moe_ls6_node_8",
+        "data_prefix": "ls6_684_7_node_8"
+      },
+      "type": "train_moe_str",
+      "recent_exec_time": "2023-04-04T23:12:39"
+    },
+    "ls6_train_transformer_node_8": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_transformer_node_8/ls6_train_transformer_node_8.log"
+      },
+      "args": {
+        "epoch": 300,
+        "workload": "ls6",
+        "model_name": "transformer_ls6_node_8",
+        "data_prefix": "ls6_684_7_node_8"
+      },
+      "type": "train_transformer_str",
+      "recent_exec_time": "2023-04-04T23:12:39"
+    },
+    "ls6_train_random_forest": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_random_forest/ls6_train_random_forest.log"
+      },
+      "args": {
+        "train_data_input": "/work/08377/dingqy/ls6/interrupt-free-provisioning/src/data/ls6/data/batch_moe_ls6_cache.pickle",
+        "output_file": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_random_forest/model/ls6_random_forest.pickle",
+        "model_type": "RandomForest"
+      },
+      "type": "train_random_forest_str",
+      "recent_exec_time": "2023-04-04T23:12:39"
+    },
+    "ls6_train_random_forest_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_random_forest_node_8/ls6_train_random_forest_node_8.log"
+      },
+      "args": {
+        "train_data_input": "/work/08377/dingqy/ls6/interrupt-free-provisioning/src/data/ls6/data/batch_moe_ls6_node_8_cache.pickle",
+        "output_file": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_random_forest_node_8/model/ls6_random_forest_node_8.pickle",
+        "model_type": "RandomForest"
+      },
+      "type": "train_random_forest_str",
+      "recent_exec_time": "2023-04-05T10:39:23"
+    },
+    "ls6_train_xgboost": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_xgboost/ls6_train_xgboost.log"
+      },
+      "args": {
+        "train_data_input": "/work/08377/dingqy/ls6/interrupt-free-provisioning/src/data/ls6/data/batch_moe_ls6_cache.pickle",
+        "output_file": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_xgboost/model/ls6_xgboost.pickle",
+        "model_type": "XGBRegression"
+      },
+      "type": "train_random_forest_str",
+      "recent_exec_time": "2023-04-04T23:12:39"
+    },
+    "ls6_train_xgboost_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_xgboost_node_8/ls6_train_xgboost_node_8.log"
+      },
+      "args": {
+        "train_data_input": "/work/08377/dingqy/ls6/interrupt-free-provisioning/src/data/ls6/data/batch_moe_ls6_node_8_cache.pickle",
+        "output_file": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_xgboost_node_8/model/ls6_xgboost_node_8.pickle",
+        "model_type": "XGBRegression"
+      },
+      "type": "train_random_forest_str",
+      "recent_exec_time": "2023-04-05T10:39:23"
+    },
+    "ls6_train_transformer_policy": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_transformer_policy/ls6_train_transformer_policy.log"
+      },
+      "args": {
+        "policy_type": "policy-gradient-transformer",
+        "cfg_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_transformer_policy",
+        "base_model_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_transformer/model/",
+        "base_prefix": "model_transformer_ls6",
+        "output_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_transformer_policy/model/",
+        "save_epoch": 60,
+        "extra_args": ""
+      },
+      "policy_sim_cfg": {},
+      "policy_cfg": {},
+      "type": "train_policy_gradient_str",
+      "recent_exec_time": "2023-04-05T00:23:41"
+    },
+    "ls6_train_transformer_policy_node_8": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_transformer_policy_node_8/ls6_train_transformer_policy_node_8.log"
+      },
+      "args": {
+        "policy_type": "policy-gradient-transformer",
+        "cfg_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_transformer_policy_node_8",
+        "base_model_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_transformer_node_8/model/",
+        "base_prefix": "model_transformer_ls6_node_8",
+        "output_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_transformer_policy_node_8/model/",
+        "save_epoch": 60,
+        "extra_args": ""
+      },
+      "policy_sim_cfg": {
+        "job_node": 8
+      },
+      "policy_cfg": {},
+      "type": "train_policy_gradient_str",
+      "recent_exec_time": "2023-04-05T00:23:41"
+    },
+    "ls6_train_moe_policy": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_moe_policy/ls6_train_moe_policy.log"
+      },
+      "args": {
+        "policy_type": "policy-gradient-moe",
+        "cfg_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_moe_policy",
+        "base_model_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_moe/model/",
+        "base_prefix": "model_moe_ls6_expert",
+        "output_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_moe_policy/model/",
+        "save_epoch": 20,
+        "extra_args": "-num_experts 10"
+      },
+      "policy_sim_cfg": {},
+      "policy_cfg": {
+        "epoch": 20
+      },
+      "type": "train_policy_gradient_str",
+      "recent_exec_time": "2023-04-05T00:23:41"
+    },
+    "ls6_train_moe_policy_node_8": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_moe_policy_node_8/ls6_train_moe_policy_node_8.log"
+      },
+      "args": {
+        "policy_type": "policy-gradient-moe",
+        "cfg_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_moe_policy_node_8",
+        "base_model_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_moe_node_8/model/",
+        "base_prefix": "model_moe_ls6_node_8_expert",
+        "output_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_moe_policy_node_8/model/",
+        "save_epoch": 20,
+        "extra_args": "-num_experts 10"
+      },
+      "policy_sim_cfg": {
+        "job_node": 8
+      },
+      "policy_cfg": {
+        "epoch": 20
+      },
+      "type": "train_policy_gradient_str",
+      "recent_exec_time": "2023-04-05T00:23:41"
+    },
+    "ls6_validate_moe": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_moe/ls6_validate_moe.log"
+      },
+      "args": {
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_moe/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_moe/model/moe_moe_ls6.pt",
+        "model_type": "moe",
+        "node": 1,
+        "samples": 156
+      },
+      "type": "validation_str",
+      "recent_exec_time": "2023-04-05T10:17:33"
+    },
+    "ls6_validate_transformer": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_transformer/ls6_validate_transformer.log"
+      },
+      "args": {
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_transformer/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_transformer/model/model_transformer_ls6.pt",
+        "model_type": "moe",
+        "node": 1,
+        "samples": 156
+      },
+      "type": "validation_str",
+      "recent_exec_time": "2023-04-05T10:17:33"
+    },
+    "ls6_validate_moe_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_moe_node_8/ls6_validate_moe_node_8.log"
+      },
+      "args": {
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_moe_node_8/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_moe_node_8/model/moe_moe_ls6_node_8.pt",
+        "model_type": "moe",
+        "node": 8,
+        "samples": 156
+      },
+      "type": "validation_str",
+      "recent_exec_time": "2023-04-05T10:17:33"
+    },
+    "ls6_validate_transformer_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_transformer_node_8/ls6_validate_transformer_node_8.log"
+      },
+      "args": {
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_transformer_node_8/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_transformer_node_8/model/model_transformer_ls6_node_8.pt",
+        "model_type": "moe",
+        "node": 8,
+        "samples": 156
+      },
+      "type": "validation_str",
+      "recent_exec_time": "2023-04-05T10:17:33"
+    },
+    "ls6_validate_random_forest": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_random_forest/ls6_validate_random_forest.log"
+      },
+      "args": {
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_random_forest/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_random_forest/model/ls6_random_forest.pickle",
+        "model_type": "baseline",
+        "node": 1,
+        "samples": 156
+      },
+      "type": "validation_str",
+      "recent_exec_time": "2023-04-05T10:17:33"
+    },
+    "ls6_validate_random_forest_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_random_forest_node_8/ls6_validate_random_forest_node_8.log"
+      },
+      "args": {
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_random_forest_node_8/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_random_forest_node_8/model/ls6_random_forest_node_8.pickle",
+        "model_type": "baseline",
+        "node": 8,
+        "samples": 156
+      },
+      "type": "validation_str",
+      "recent_exec_time": "2023-04-05T11:05:36"
+    },
+    "ls6_validate_xgboost": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_xgboost/ls6_validate_xgboost.log"
+      },
+      "args": {
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_xgboost/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_xgboost/model/ls6_xgboost.pickle",
+        "model_type": "baseline",
+        "node": 1,
+        "samples": 156
+      },
+      "type": "validation_str",
+      "recent_exec_time": "2023-04-05T10:17:33"
+    },
+    "ls6_validate_xgboost_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_xgboost_node_8/ls6_validate_xgboost_node_8.log"
+      },
+      "args": {
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_xgboost_node_8/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_xgboost_node_8/model/ls6_xgboost_node_8.pickle",
+        "model_type": "baseline",
+        "node": 8,
+        "samples": 156
+      },
+      "type": "validation_str",
+      "recent_exec_time": "2023-04-05T11:05:36"
+    },
+    "ls6_validate_transformer_policy_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_transformer_policy_node_8/ls6_validate_transformer_policy_node_8.log"
+      },
+      "args": {
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_transformer_policy_node_8/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_transformer_policy_node_8/model/tx_policy_60.pt",
+        "model_type": "policy-gradient",
+        "node": 8,
+        "samples": 156
+      },
+      "type": "validation_str",
+      "recent_exec_time": "2023-04-05T10:36:31"
+    },
+    "ls6_validate_moe_policy": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_moe_policy/ls6_validate_moe_policy.log"
+      },
+      "args": {
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_moe_policy/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_moe_policy/model/moe_policy_20.pt",
+        "model_type": "policy-gradient",
+        "node": 1,
+        "samples": 156
+      },
+      "type": "validation_str",
+      "recent_exec_time": "2023-04-05T10:36:31"
+    },
+    "ls6_validate_transformer_policy": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_transformer_policy/ls6_validate_transformer_policy.log"
+      },
+      "args": {
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_transformer_policy/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_transformer_policy/model/tx_policy_60.pt",
+        "model_type": "policy-gradient",
+        "node": 1,
+        "samples": 156
+      },
+      "type": "validation_str",
+      "recent_exec_time": "2023-04-05T10:36:31"
+    },
+    "ls6_validate_moe_policy_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_moe_policy_node_8/ls6_validate_moe_policy_node_8.log"
+      },
+      "args": {
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2023-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_validate_moe_policy_node_8/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_2/ls6_train_moe_policy_node_8/model/moe_policy_20.pt",
+        "model_type": "policy-gradient",
+        "node": 8,
+        "samples": 156
+      },
+      "type": "validation_str",
+      "recent_exec_time": "2023-04-05T10:36:31"
+    }
+  }
+}

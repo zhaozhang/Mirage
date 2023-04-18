@@ -1,0 +1,10 @@
+{
+  "workload": [
+    {
+      "submit_time": "2022-02-27T18:46:00",
+      "scripts": ["/work/08377/dingqy/ls6/interrupt-free-provisioning/src/data/frontera/validate_frontera_window_144_test", "/work/08377/dingqy/ls6/interrupt-free-provisioning/src/data/frontera/validate_frontera_window_144_test"],
+      "job_index": 0
+    }
+  ],
+  "project_name": "Deep-Learning-at-Sca"
+}

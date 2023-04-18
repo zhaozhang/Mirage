@@ -1,0 +1,9 @@
+{
+  "QuantileRegression": {
+    "quantile": 0.9,
+    "solver": "highs"
+  },
+  "RandomForest":{
+    "n_estimators": 100
+  }
+}

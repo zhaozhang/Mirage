@@ -1,0 +1,17 @@
+{
+  "workload": [
+    "frontera",
+    "longhorn"
+  ],
+  "baseline": [
+    "baseline_avg_interval_2",
+    "baseline_reactive_interval_2"
+  ],
+  "validation": [
+    "validation_window_36_interval_2",
+    "validation_window_144_interval_2",
+    "validation_window_6_interval_2",
+    "validation_old_interval_2"
+  ],
+  "fig_output": "../model_experiment/figure_no_filter/"
+}

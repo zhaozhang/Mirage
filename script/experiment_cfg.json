@@ -1,0 +1,241 @@
+{
+  "general_args": {
+    "script_header": "#!/bin/bash\n#SBATCH -N 1\n#SBATCH -n 1\n#SBATCH -p {queue}\n#SBATCH -t {time_limit}\n#SBATCH -o {log}\n",
+    "validation_str": "module load python3/3.9.7\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/top\npython3 online_validate.py -num_validate {samples} -interval 4 -workload {workload_file} -workload_len 5 -start_time {start_time} -od {output_dir} -m {model} -warmup_len 2 -sample_window 144 -parallel -mt {model_type} -node {node}\n",
+    "train_moe_str": "module load python3/3.9.7\nmodule load cuda/11.3\nexport LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/model/moe/\npython3 train.py -wd ../../data/{workload}/ -n {model_name} -parallel -nd {data_prefix} -mix_epoch {epoch} -sample_window 144\n",
+    "train_transformer_str": "module load python3/3.9.7\nmodule load cuda/11.3\nexport LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/model/init_version/\npython3 train.py -wd ../../data/{workload}/ -n {model_name} -parallel -nd {data_prefix} -epoch {epoch}\n",
+    "train_policy_str": "module load python3/3.9.7\nmodule load cuda/11.3\nexport LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/model/{policy_type}\npython3 policy_gradient.py -train_cfg {train_cfg} --use_cuda -config ./sim.json -base_dir {base_model_dir} -base_prefix {base_prefix} -output_dir {output_dir}\n",
+    "offline_gen_str": "module load python3/3.9.7\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/top/\npython3 offline_data_gen.py -parallel -num_samples {samples} -num_probe 7 -interval 4 -od {output_dir} -workload {workload_file} -start_time {start_time} -warmup_len 2 -workload_len 5 -node {node}\npython3 /work2/08377/dingqy/ls6/interrupt-free-provisioning/script/pickle_merge.py -wd {output_dir} -out {output_file}"
+  },
+  "tasks": {
+    "frontera_offline_gen_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_offline_gen_node_8/frontera_offline_gen_node_8.log"
+      },
+      "args": {
+        "samples": 2682,
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/src/data/frontera/data_node_8",
+        "workload_file": "filtered-frontera-rtx.log",
+        "start_time": "2022-10-05T00:00:00",
+        "output_file": "batch_frontera_2682_7_node_8.pickle",
+        "node": 8
+      },
+      "type": "offline_gen_str"
+    },
+    "longhorn_offline_gen_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/longhorn_offline_gen_node_8/longhorn_offline_gen_node_8.log"
+      },
+      "args": {
+        "samples": 2802,
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/src/data/longhorn/data_node_8",
+        "workload_file": "filtered-frontera-rtx.log",
+        "start_time": "2022-10-05T00:00:00",
+        "output_file": "batch_longhorn_2802_7_node_8.pickle",
+        "node": 8
+      },
+      "type": "offline_gen_str"
+    },
+    "ls6_offline_gen": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/ls6_offline_gen/ls6_offline_gen.log"
+      },
+      "args": {
+        "samples": 708,
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/src/data/ls6/train_data",
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2022-10-05T00:00:00",
+        "output_file": "batch_ls6_708_7.pickle",
+        "node": 1
+      },
+      "type": "offline_gen_str"
+    },
+    "ls6_offline_gen_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/ls6_offline_gen_node_8/ls6_offline_gen_node_8.log"
+      },
+      "args": {
+        "samples": 708,
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/src/data/ls6/data_node_8",
+        "workload_file": "filtered-ls6.log",
+        "start_time": "2022-10-05T00:00:00",
+        "output_file": "batch_ls6_708_7_node_8.pickle",
+        "node": 8
+      },
+      "type": "offline_gen_str",
+      "recent_exec_time": "2023-03-08T11:20:43"
+    },
+    "longhorn_train_moe": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/longhorn_train_moe/longhorn_train_moe.log"
+      },
+      "args": {
+        "epoch": 300,
+        "workload": "longhorn",
+        "model_name": "moe_longhorn",
+        "data_prefix": "longhorn_2802_7"
+      },
+      "type": "train_moe_str",
+      "recent_exec_time": "2023-03-05T22:55:41"
+    },
+    "ls6_train_moe": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/ls6_train_moe/ls6_train_moe.log"
+      },
+      "args": {
+        "epoch": 300,
+        "workload": "ls6",
+        "model_name": "moe_ls6",
+        "data_prefix": "ls6_708_7"
+      },
+      "type": "train_moe_str",
+      "recent_exec_time": "2023-03-08T23:22:09"
+    },
+    "ls6_train_transformer": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/ls6_train_transformer/ls6_train_transformer.log"
+      },
+      "args": {
+        "epoch": 300,
+        "workload": "ls6",
+        "model_name": "transformer_ls6",
+        "data_prefix": "ls6_708_7"
+      },
+      "type": "train_transformer_str",
+      "recent_exec_time": "2023-03-08T23:22:08"
+    },
+    "longhorn_train_transformer": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/longhorn_train_transformer/longhorn_train_transformer.log"
+      },
+      "args": {
+        "epoch": 300,
+        "workload": "longhorn",
+        "model_name": "transformer_longhorn",
+        "data_prefix": "longhorn_2802_7"
+      },
+      "type": "train_transformer_str",
+      "recent_exec_time": "2023-03-05T22:55:41"
+    },
+    "longhorn_validate_moe": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/longhorn_validate_moe/longhorn_validate_moe.log"
+      },
+      "args": {
+        "workload_file": "filtered-longhorn-v100.log",
+        "start_time": "2021-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/longhorn_validate_moe/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/longhorn_train_moe/model/moe_moe_longhorn.pt",
+        "model_type": "moe",
+        "node": 1,
+        "samples": 888
+      },
+      "type": "validation_str",
+      "recent_exec_time": "2023-03-06T11:28:49"
+    },
+    "longhorn_validate_transformer": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/longhorn_validate_transformer/longhorn_validate_transformer.log"
+      },
+      "args": {
+        "workload_file": "filtered-longhorn-v100.log",
+        "start_time": "2021-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/longhorn_validate_transformer/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/longhorn_train_transformer/model/model_transformer_longhorn.pt",
+        "model_type": "moe",
+        "node": 1,
+        "samples": 888
+      },
+      "type": "validation_str",
+      "recent_exec_time": "2023-03-06T11:28:49"
+    },
+    "ls6_validate_moe": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/ls6_validate_moe/ls6_validate_moe.log"
+      },
+      "args": {
+        "workload_file": "filtered-longhorn-v100.log",
+        "start_time": "2023-02-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/ls6_validate_moe/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/ls6_train_moe/model/moe_moe_ls6.pt",
+        "model_type": "moe",
+        "node": 1,
+        "samples": 138
+      },
+      "type": "validation_str"
+    },
+    "ls6_validate_transformer": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/ls6_validate_transformer/ls6_validate_transformer.log"
+      },
+      "args": {
+        "workload_file": "filtered-longhorn-v100.log",
+        "start_time": "2023-02-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/ls6_validate_transformer/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/ls6_train_transformer/model/model_transformer_ls6.pt",
+        "model_type": "moe",
+        "node": 1,
+        "samples": 138
+      },
+      "type": "validation_str"
+    },
+    "longhorn_validate_transformer_policy": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "longhorn_validate_transformer_policy.log"
+      },
+      "args": {
+        "workload_file": "filtered-longhorn-v100.log",
+        "start_time": "2021-03-01T00:00:00",
+        "output_dir": "./result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/src/data/frontera/data/moe/model/moe_longhorn_transformer.pt",
+        "model_type": "policy-gradient",
+        "node": 1,
+        "samples": 888
+      },
+      "type": "validation_str"
+    },
+    "longhorn_validate_moe_policy": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "longhorn_validate_moe_policy.log"
+      },
+      "args": {
+        "workload_file": "filtered-longhorn-v100.log",
+        "start_time": "2021-03-01T00:00:00",
+        "output_dir": "./result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/src/data/frontera/data/moe/model/moe_longhorn_transformer.pt",
+        "model_type": "policy-gradient",
+        "node": 1,
+        "samples": 888
+      },
+      "type": "validation_str"
+    }
+  }
+}

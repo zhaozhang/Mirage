@@ -1,0 +1,382 @@
+{
+  "general_args": {
+    "script_header": "#!/bin/bash\n#SBATCH -N 1\n#SBATCH -n 1\n#SBATCH -p {queue}\n#SBATCH -t {time_limit}\n#SBATCH -o {log}\n",
+    "validation_str": "module load python3/3.9.7\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/top\npython3 online_validate.py -num_validate {samples} -interval 4 -workload {workload_file} -workload_len 5 -start_time {start_time} -od {output_dir} -m {model} -warmup_len 2 -sample_window 144 -parallel -mt {model_type} -node {node}\n",
+    "train_moe_str": "module load python3/3.9.7\nmodule load cuda/11.3\nexport LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/model/moe/\npython3 train.py -wd ../../data/{workload}/ -n {model_name} -parallel -nd {data_prefix} -mix_epoch {epoch} -sample_window 144\n",
+    "train_transformer_str": "module load python3/3.9.7\nmodule load cuda/11.3\nexport LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/model/init_version/\npython3 train.py -wd ../../data/{workload}/ -n {model_name} -parallel -nd {data_prefix} -epoch {epoch}\n",
+    "train_policy_gradient_str": "module load python3/3.9.7\nmodule load cuda/11.3\nexport LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/model/{policy_type}\npython3 policy_gradient.py -train_cfg {cfg_dir}/train_cfg.json --use_cuda -config {cfg_dir}/sim.json -base_dir {base_model_dir} -base_prefix {base_prefix} -output_dir {output_dir} -save {save_epoch} {extra_args}\n",
+    "train_random_forest_str": "module load python3/3.9.7\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/script/\npython3 quantile_baseline.py -data {train_data_input} -out {output_file} -config ./baseline_model_config.json -model {model_type}\n",
+    "offline_gen_str": "module load python3/3.9.7\ncd /work2/08377/dingqy/ls6/interrupt-free-provisioning/src/top/\npython3 offline_data_gen.py -parallel -num_samples {samples} -num_probe 7 -interval 4 -od {output_dir} -workload {workload_file} -start_time {start_time} -warmup_len 2 -workload_len 5 -node {node} -baseline {baseline}\npython3 /work2/08377/dingqy/ls6/interrupt-free-provisioning/script/pickle_merge.py -wd {output_dir} -out {output_file}"
+  },
+  "general_policy_sim_cfg": {
+    "job_log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/src/workload/filtered-frontera-rtx.log",
+    "slurm_config": "/work/08377/dingqy/ls6/interrupt-free-provisioning/src/test/test_data/slurm_config.json",
+    "backfill_config": "/work/08377/dingqy/ls6/interrupt-free-provisioning/src/test/test_data/backfill_config.json",
+    "sim_start_time": "2019-12-04T00:00:00",
+    "log_start_time": "2019-12-04T00:00:00",
+    "log_end_time": "2021-02-23T00:00:00",
+    "warmup_len": 2,
+    "sim_len": 5,
+    "sim_window": 144,
+    "seed": 10,
+    "job_node": 1
+  },
+  "general_policy_model_cfg": {
+    "lr": 1e-2,
+    "batch_size": 32,
+    "epoch": 60
+  },
+  "tasks": {
+    "frontera_offline_gen_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_offline_gen_node_8/frontera_offline_gen_node_8.log"
+      },
+      "args": {
+        "samples": 2682,
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/src/data/frontera/data_node_8",
+        "workload_file": "filtered-frontera-rtx.log",
+        "start_time": "2019-12-04T00:00:00",
+        "output_file": "batch_frontera_2682_7_node_8.pickle",
+        "node": 8,
+        "baseline": "default"
+      },
+      "type": "offline_gen_str"
+    },
+    "frontera_offline_gen_baseline_avg_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_offline_gen_baseline_avg_node_8/frontera_offline_gen_baseline_avg_node_8.log"
+      },
+      "args": {
+        "samples": 888,
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/src/data/frontera/baseline_avg_frontera_node_8",
+        "workload_file": "filtered-frontera-rtx.log",
+        "start_time": "2021-03-01T00:00:00",
+        "output_file": "batch_frontera_2682_7_node_8.pickle",
+        "node": 8,
+        "baseline": "baseline_avg"
+      },
+      "type": "offline_gen_str"
+    },
+    "frontera_offline_gen_baseline_reactive_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_offline_gen_baseline_reactive_node_8/frontera_offline_gen_baseline_reactive_node_8.log"
+      },
+      "args": {
+        "samples": 888,
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/src/data/frontera/baseline_reactive_frontera_node_8",
+        "workload_file": "filtered-frontera-rtx.log",
+        "start_time": "2021-03-01T00:00:00",
+        "output_file": "batch_frontera_2682_7_node_8.pickle",
+        "node": 8,
+        "baseline": "baseline_reactive"
+      },
+      "type": "offline_gen_str"
+    },
+    "frontera_train_moe_node_8": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_moe_node_8/frontera_train_moe_node_8.log"
+      },
+      "args": {
+        "epoch": 300,
+        "workload": "frontera",
+        "model_name": "moe_frontera_node_8",
+        "data_prefix": "frontera_2682_7_node_8"
+      },
+      "type": "train_moe_str"
+    },
+    "frontera_train_transformer_node_8": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_transformer_node_8/frontera_train_transformer_node_8.log"
+      },
+      "args": {
+        "epoch": 300,
+        "workload": "frontera",
+        "model_name": "transformer_frontera_node_8",
+        "data_prefix": "frontera_2682_7_node_8"
+      },
+      "type": "train_transformer_str"
+    },
+    "frontera_train_random_forest": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_random_forest/frontera_train_random_forest.log"
+      },
+      "args": {
+        "train_data_input": "/work/08377/dingqy/ls6/interrupt-free-provisioning/src/data/frontera/data/batch_frontera_2682_7_window_144_mix_300_cache.pickle",
+        "output_file": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_random_forest/model/frontera_random_forest.pickle",
+        "model_type": "RandomForest"
+      },
+      "type": "train_random_forest_str"
+    },
+    "frontera_train_random_forest_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_random_forest_node_8/frontera_train_random_forest_node_8.log"
+      },
+      "args": {
+        "train_data_input": "/work/08377/dingqy/ls6/interrupt-free-provisioning/src/data/frontera/data/batch_transformer_frontera_node_8_cache.pickle",
+        "output_file": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_random_forest_node_8/model/frontera_random_forest_node_8.pickle",
+        "model_type": "RandomForest"
+      },
+      "type": "train_random_forest_str"
+    },
+    "frontera_train_xgboost_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_xgboost_node_8/frontera_train_xgboost_node_8.log"
+      },
+      "args": {
+        "train_data_input": "/work/08377/dingqy/ls6/interrupt-free-provisioning/src/data/frontera/data/batch_transformer_frontera_node_8_cache.pickle",
+        "output_file": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_xgboost_node_8/model/frontera_xgboost_node_8.pickle",
+        "model_type": "XGBRegression"
+      },
+      "type": "train_random_forest_str"
+    },
+    "frontera_train_xgboost": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_xgboost/frontera_train_xgboost.log"
+      },
+      "args": {
+        "train_data_input": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/src/data/frontera/data/batch_frontera_2682_7_window_144_mix_300_cache.pickle",
+        "output_file": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_xgboost/model/frontera_xgboost.pickle",
+        "model_type": "XGBRegression"
+      },
+      "type": "train_random_forest_str"
+    },
+    "frontera_train_transformer_policy": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_transformer_policy/frontera_train_transformer_policy.log"
+      },
+      "args": {
+        "policy_type": "policy-gradient-transformer",
+        "cfg_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_transformer_policy",
+        "base_model_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_transformer/model/",
+        "base_prefix": "model_transformer_frontera",
+        "output_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_transformer_policy/model/",
+        "save_epoch": 60,
+        "extra_args": ""
+      },
+      "policy_sim_cfg": {},
+      "policy_cfg": {},
+      "type": "train_policy_gradient_str"
+    },
+    "frontera_train_transformer_policy_node_8": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_transformer_policy_node_8/frontera_train_transformer_policy_node_8.log"
+      },
+      "args": {
+        "policy_type": "policy-gradient-transformer",
+        "cfg_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_transformer_policy_node_8",
+        "base_model_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_transformer_node_8/model/",
+        "base_prefix": "model_transformer_frontera_node_8",
+        "output_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_transformer_policy_node_8/model/",
+        "save_epoch": 60,
+        "extra_args": ""
+      },
+      "policy_sim_cfg": {
+        "job_node": 8
+      },
+      "policy_cfg": {},
+      "type": "train_policy_gradient_str"
+    },
+    "frontera_train_moe_policy": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_moe_policy/frontera_train_moe_policy.log"
+      },
+      "args": {
+        "policy_type": "policy-gradient-moe",
+        "cfg_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_moe_policy",
+        "base_model_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_moe/model/",
+        "base_prefix": "model_moe_frontera_expert",
+        "output_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_moe_policy/model/",
+        "save_epoch": 20,
+        "extra_args": "-num_experts 10"
+      },
+      "policy_sim_cfg": {},
+      "policy_cfg": {
+        "epoch": 20
+      },
+      "type": "train_policy_gradient_str"
+    },
+    "frontera_train_moe_policy_node_8": {
+      "header": {
+        "queue": "gpu-a100",
+        "time_limit": "48:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_moe_policy_node_8/frontera_train_moe_policy_node_8.log"
+      },
+      "args": {
+        "policy_type": "policy-gradient-moe",
+        "cfg_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_moe_policy_node_8",
+        "base_model_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_moe_node_8/model/",
+        "base_prefix": "model_moe_frontera_node_8_expert",
+        "output_dir": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_moe_policy_node_8/model/",
+        "save_epoch": 20,
+        "extra_args": "-num_experts 10"
+      },
+      "policy_sim_cfg": {
+        "job_node": 8
+      },
+      "policy_cfg": {
+        "epoch": 20
+      },
+      "type": "train_policy_gradient_str"
+    },
+    "frontera_validate_moe_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_moe_node_8/frontera_validate_moe_node_8.log"
+      },
+      "args": {
+        "workload_file": "filtered-frontera-rtx.log",
+        "start_time": "2021-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_moe_node_8/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_moe_node_8/model/moe_moe_frontera_node_8.pt",
+        "model_type": "moe",
+        "node": 8,
+        "samples": 888
+      },
+      "type": "validation_str"
+    },
+    "frontera_validate_transformer_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_transformer_node_8/frontera_validate_transformer_node_8.log"
+      },
+      "args": {
+        "workload_file": "filtered-frontera-rtx.log",
+        "start_time": "2021-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_transformer_node_8/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_transformer_node_8/model/model_transformer_frontera_node_8.pt",
+        "model_type": "moe",
+        "node": 8,
+        "samples": 888
+      },
+      "type": "validation_str"
+    },
+    "frontera_validate_random_forest_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_random_forest_node_8/frontera_validate_random_forest_node_8.log"
+      },
+      "args": {
+        "workload_file": "filtered-frontera-rtx.log",
+        "start_time": "2021-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_random_forest_node_8/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_random_forest_node_8/model/frontera_random_forest_node_8.pickle",
+        "model_type": "baseline",
+        "node": 8,
+        "samples": 888
+      },
+      "type": "validation_str"
+    },
+    "frontera_validate_random_forest": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_random_forest/frontera_validate_random_forest.log"
+      },
+      "args": {
+        "workload_file": "filtered-frontera-rtx.log",
+        "start_time": "2021-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_random_forest/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_random_forest/model/frontera_random_forest.pickle",
+        "model_type": "baseline",
+        "node": 1,
+        "samples": 888
+      },
+      "type": "validation_str"
+    },
+    "frontera_validate_transformer_policy_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_transformer_policy_node_8/frontera_validate_transformer_policy_node_8.log"
+      },
+      "args": {
+        "workload_file": "filtered-frontera-rtx.log",
+        "start_time": "2021-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_transformer_policy_node_8/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_transformer_policy_node_8/model/tx_policy_60.pt",
+        "model_type": "policy-gradient",
+        "node": 8,
+        "samples": 888
+      },
+      "type": "validation_str"
+    },
+    "frontera_validate_moe_policy_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_moe_policy_node_8/frontera_validate_moe_policy_node_8.log"
+      },
+      "args": {
+        "workload_file": "filtered-frontera-rtx.log",
+        "start_time": "2021-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_moe_policy_node_8/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_moe_policy_node_8/model/moe_policy_20.pt",
+        "model_type": "policy-gradient",
+        "node": 8,
+        "samples": 888
+      },
+      "type": "validation_str"
+    },
+    "frontera_validate_xgboost_node_8": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_xgboost_node_8/frontera_validate_xgboost_node_8.log"
+      },
+      "args": {
+        "workload_file": "filtered-frontera-rtx.log",
+        "start_time": "2021-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_xgboost_node_8/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_xgboost_node_8/model/frontera_xgboost_node_8.pickle",
+        "model_type": "baseline",
+        "node": 8,
+        "samples": 888
+      },
+      "type": "validation_str"
+    },
+    "frontera_validate_xgboost": {
+      "header": {
+        "queue": "normal",
+        "time_limit": "02:00:00",
+        "log": "/work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_xgboost/frontera_validate_xgboost.log"
+      },
+      "args": {
+        "workload_file": "filtered-frontera-rtx.log",
+        "start_time": "2021-03-01T00:00:00",
+        "output_dir": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_validate_xgboost/result",
+        "model": "/work2/08377/dingqy/ls6/interrupt-free-provisioning/experiment/experiment_1/frontera_train_xgboost/model/frontera_xgboost.pickle",
+        "model_type": "baseline",
+        "node": 8,
+        "samples": 888
+      },
+      "type": "validation_str"
+    }
+  }
+}
