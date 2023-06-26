@@ -4,9 +4,9 @@
 
 ### File Directory
 
-* /pro_2/train_model: Model train
-* /pro_2/offline_data_gen: Training data generation and baseline generation
-* /pro_2/online_validation: Online validation of the model
+* /Mirage/train_model: Model train
+* /Mirage/offline_data_gen: Training data generation and baseline generation
+* /Mirage/online_validation: Online validation of the model
 
 ### Data
 
@@ -29,14 +29,14 @@ There are three types of data that we use in our project:
 
 2. After logging in, download the docker image
    ```shell
-      singularity pull docker://ghcr.io/zhaozhang/pro_2:master
-      singularity exec pro_2_master.sif bash
+      singularity pull docker://ghcr.io/zhaozhang/Mirage:master
+      singularity exec Mirage_master.sif bash
    ```
 
 3. Copy the code to /dev/shm for write permission
    ```shell
-      Singularity> cp -r /pro_2 /dev/shm/
-      Singularity> cd /dev/shm/pro_2
+      Singularity> cp -r /Mirage /dev/shm/
+      Singularity> cd /dev/shm/Mirage
    ```
 
 4. The raw job trace data is proprietary, please contact zzhang@tacc.utexas.edu to get a copy of the job trace data, which is not publicly available. With the link, e.g., https://utexas.box.com/shared/static/hashvalue, run
@@ -81,7 +81,7 @@ There are three types of data that we use in our project:
    You can use the previously generated training data or download from the provided link.
    ```shell
    # Create two file folders called "data" and "model" under current directory.
-   Singularity> cd /dev/shm/pro_2/train_model/
+   Singularity> cd /dev/shm/Mirage/train_model/
    Singularity> mdkir data model
 
    # Copy the training data into "data" folder.
@@ -100,7 +100,7 @@ There are three types of data that we use in our project:
 
 1. Copy the log trace so that Ray can run in parallel
    ```shell
-   Singularity> cd /dev/shm/pro_2/online_validation
+   Singularity> cd /dev/shm/Mirage/online_validation
    Singularity> cp ../offline_data_gen/filtered-longhorn-v100.log .
    ```
 
@@ -108,7 +108,7 @@ There are three types of data that we use in our project:
    ```shell
    # If using the trained model, you do not have to do anything
    # Otherwise, download the trained model using the following link
-   curl -L https://utexas.box.com/shared/static/t3s3cdku866ly7hwyc0ysng4svqkjwpe --output /dev/shm/pro_2/train_model/model/model_2800_7.pt
+   curl -L https://utexas.box.com/shared/static/t3s3cdku866ly7hwyc0ysng4svqkjwpe --output /dev/shm/Mirage/train_model/model/model_2800_7.pt
    ```
 
 3. Run
