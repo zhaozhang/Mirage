@@ -6,7 +6,7 @@
 
 Download source code
 ```shell
-git clone https://github.com/zhaozhang/Pro_2.git
+git clone https://github.com/zhaozhang/Mirage.git
 ```
 
 ### Data Download
