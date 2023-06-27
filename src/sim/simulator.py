@@ -69,7 +69,7 @@ class Simulator:
     def init_scheduler(self, nodes, slurm_config, start_time, backfill_config, queue_time_len=100):
         if "nodes" in slurm_config.keys():
             nodes = slurm_config["nodes"]
-        print("Cluster nodes: {}".format(nodes))
+        # print("Cluster nodes: {}".format(nodes))
         backfill_policy = scheduler.BackfillPolicy(backfill_config, start_time, nodes)
         self._scheduler = scheduler.Scheduler(nodes, start_time, backfill_policy, slurm_config, self._mode,
                                               queue_time_len)

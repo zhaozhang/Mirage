@@ -11,12 +11,12 @@ PROJECT_ROOT = os.path.abspath(os.path.join(
     os.pardir)
 )
 sys.path.append(PROJECT_ROOT)
-sys.path.append(os.path.abspath("../moe/"))
+sys.path.append(os.path.abspath("../model/"))
 import sim
 from sim import *
 from moe import *
 from quantile import quantile
-from model import TransformerRegressor
+from moe.model import TransformerRegressor
 
 
 @ray.remote
