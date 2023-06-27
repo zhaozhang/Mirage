@@ -16,13 +16,16 @@ There are three types of data that we use in our project:
 * job traces: derived from scheduler logs. The raw job trace is proprietary; please contact zzhang@tacc.utexas.edu to obtain a copy.
 * please place the downloaded job trace files in src/workload.
 
-
 ### Manual
 
 1. Create directory {MIRAGE_ROOT}/src/data and {MIRAGE_ROOT}/src/experiment
 2. Copy {MIRAGE_ROOT}/src/model/moe to {MIRAGE_ROOT}/src/moe
 3. Replace {MIRAGE_ROOT} with local mirage path
 4. Execute following commands from offline data generation/baseline, model training, to model validation
+
+#### Notice
+* Default simulation parameters are in {MIRAGE_ROOT}/src/test/test_data. One of the useful fields is "nodes". This can be set in slurm_config.json.
+* Xgboost and random forest training needs data from MoE/transformer training.
 
 Offline data generation (node 1)
 ```shell
@@ -68,7 +71,7 @@ python3 train.py -wd ../../data/ls6/ -n moe_ls6 -parallel -nd ls6_684_7 -mix_epo
 Train xgboost
 ```shell
 cd {MIRAGE_ROOT}/script/
-python3 quantile_baseline.py -data /work/08377/dingqy/ls6/interrupt-free-provisioning/src/data/ls6/data/batch_moe_ls6_cache.pickle -out /work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/ls6_train_xgboost/model/ls6_xgboost.pickle -config ./baseline_model_config.json -model RandomForest
+python3 quantile_baseline.py -data {MIRAGE_ROOT}/src/data/ls6/data/batch_moe_ls6_cache.pickle -out {MIRAGE_ROOT}/experiment/ls6_train_xgboost/model/ls6_xgboost.pickle -config ./baseline_model_config.json -model RandomForest
 ```
 Train transformer
 ```shell
@@ -78,17 +81,17 @@ python3 train.py -wd ../../data/ls6/ -n transformer_ls6 -parallel -nd ls6_684_7 
 Train MoE policy
 ```shell
 cd {MIRAGE_ROOT}/src/model/policy-gradient-moe
-python3 policy_gradient.py -train_cfg /work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/ls6_train_moe_policy/train_cfg.json --use_cuda -config /work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/ls6_train_moe_policy/sim.json -base_dir /work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/ls6_train_moe/model/ -base_prefix model_moe_ls6_expert -output_dir /work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/ls6_train_moe_policy/model/ -save 20 -num_experts 10
+python3 policy_gradient.py -train_cfg {MIRAGE_ROOT}/experiment/ls6_train_moe_policy/train_cfg.json --use_cuda -config {MIRAGE_ROOT}/experiment/ls6_train_moe_policy/sim.json -base_dir {MIRAGE_ROOT}/experiment/ls6_train_moe/model/ -base_prefix model_moe_ls6_expert -output_dir {MIRAGE_ROOT}/experiment/ls6_train_moe_policy/model/ -save 20 -num_experts 10
 ```
 Train transformer policy
 ```shell
 cd {MIRAGE_ROOT}/src/model/policy-gradient-transformer
-python3 policy_gradient.py -train_cfg /work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/ls6_train_transformer_policy/train_cfg.json --use_cuda -config /work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/ls6_train_transformer_policy/sim.json -base_dir /work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/ls6_train_transformer/model/ -base_prefix model_transformer_ls6 -output_dir /work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/ls6_train_transformer_policy/model/ -save 60 
+python3 policy_gradient.py -train_cfg {MIRAGE_ROOT}/experiment/ls6_train_transformer_policy/train_cfg.json --use_cuda -config {MIRAGE_ROOT}/experiment/ls6_train_transformer_policy/sim.json -base_dir {MIRAGE_ROOT}/experiment/ls6_train_transformer/model/ -base_prefix model_transformer_ls6 -output_dir {MIRAGE_ROOT}/experiment/ls6_train_transformer_policy/model/ -save 60 
 ```
 Train random forest
 ```shell
 cd {MIRAGE_ROOT}/script/
-python3 quantile_baseline.py -data /work/08377/dingqy/ls6/interrupt-free-provisioning/src/data/ls6/data/batch_moe_ls6_cache.pickle -out /work/08377/dingqy/ls6/interrupt-free-provisioning/experiment/ls6_train_random_forest/model/ls6_random_forest.pickle -config ./baseline_model_config.json -model RandomForest
+python3 quantile_baseline.py -data {MIRAGE_ROOT}/src/data/ls6/data/batch_moe_ls6_cache.pickle -out {MIRAGE_ROOT}/experiment/ls6_train_random_forest/model/ls6_random_forest.pickle -config ./baseline_model_config.json -model RandomForest
 ```
 Validate random forest
 ```shell
