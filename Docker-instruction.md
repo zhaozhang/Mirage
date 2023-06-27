@@ -1,4 +1,4 @@
-## Pro2 Source Code and User Manual
+## Mirage Source Code and User Manual
 
 ***
 
