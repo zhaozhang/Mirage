@@ -20,7 +20,7 @@ There are three types of data that we use in our project:
 
 1. Create directory {MIRAGE_ROOT}/src/data and {MIRAGE_ROOT}/src/experiment
 2. Copy {MIRAGE_ROOT}/src/model/moe to {MIRAGE_ROOT}/src/moe
-3. Replace {MIRAGE_ROOT} with local mirage path
+3. Replace {MIRAGE_ROOT} with local Mirage path
 4. Execute following commands from offline data generation/baseline, model training, to model validation
 
 #### Notice
