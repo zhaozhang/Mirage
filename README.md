@@ -26,6 +26,7 @@ There are three types of data that we use in our project:
 #### Notice
 * Default simulation parameters are in {MIRAGE_ROOT}/src/test/test_data. One of the useful fields is "nodes". This can be set in slurm_config.json.
 * Xgboost and random forest training needs data from MoE/transformer training.
+* The output files of MoE and transformer training will be in {MIRAGE_ROOT}/src/data/model, which is fixed directory. To make experiments organized, we recommend users to copy model files into {MIRAGE_ROOT}/experiment/{EXPERIMENT_NAME}/result
 
 Offline data generation (node 1)
 ```shell
